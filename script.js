@@ -1,9 +1,9 @@
 const http = require('http');
 
 let books = [
-  { id: 1, title: 'The Alchemist', author: 'Paulo Coelho', category: 'fiction' },
-  { id: 2, title: 'Atomic Habits', author: 'James Clear', category: 'self-help' },
-  { id: 3, title: 'Rich Dad Poor Dad', author: 'Robert Kiyosaki', category: 'finance' }
+  { id: 1, title: 'The Hobbit', author: 'J.R.R. Tolkien', category: 'fiction' },
+  { id: 2, title: 'Deep Work', author: 'Cal Newport', category: 'self-help' },
+  { id: 3, title: 'The Intelligent Investor', author: 'Benjamin Graham', category: 'finance' }
 ];
 
 const server = http.createServer((req, res) => {
