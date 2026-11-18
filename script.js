@@ -1,58 +1,44 @@
-// libary app, web application|focus on node.js/postman commanda|
+const http = require('http');
 
-// {
-//     "id":1,
-//     "title": " the al",
-//     "author": "...",
-//     "category":"..."
-// }
-// use get post put and delete
+let books = [
+  { id: 1, title: 'The Alchemist', author: 'Paulo Coelho', category: 'fiction' },
+  { id: 2, title: 'Atomic Habits', author: 'James Clear', category: 'self-help' },
+  { id: 3, title: 'Rich Dad Poor Dad', author: 'Robert Kiyosaki', category: 'finance' }
+];
 
-
-const http = require('http')
-
-let books =[
-    {
-    "id":1,
-    "title": " the al",
-    "author": "...",
-    "category":"..."
-}
-]
-
-const server = http.createServer((req,res)=>{
-    res.setHeader('key','value');
-    const parts=req.url.split('/');
-    const resource = parts[1];
-    const id=parseInt(parts[2]);
-
-
-if(req.method==="GET"&&req.url==="/books"){
-    res.writeHead(200);
+const server = http.createServer((req, res) => {
+  res.setHeader('Content-Type', 'application/json');
+  if (req.method === 'GET') {
+    res.statusCode = 200;
     res.end(JSON.stringify(books));
-}
+  }
+  else if (req.method === 'POST') {
+    let body = '';
 
+    req.on('data', chunk => {
+      body += chunk;
+    });
 
-else if (req.method === 'DELETE' && resource === 'books' && !isNaN(id)) {
-        const index = books.findIndex(b => b.id === id);
-        if (index === -1) {
-            res.writeHead(404);
-            return res.end(JSON.stringify({ error: "Book not found" }));
-        }
+    req.on('end', () => {
+      const newBook = JSON.parse(body);
+      newBook.id = books.length + 1;
+      books.push(newBook);
 
-        const deletedBook = books.splice(index, 1);
-        res.writeHead(200);
-        res.end(JSON.stringify({ message: "Book deleted", book: deletedBook[0] }));
-    }
+      res.statusCode = 201;
+      res.end(JSON.stringify(newBook));
+    });
+  }
+  else if (req.method === 'DELETE') {
+    books = [];
+    res.statusCode = 200;
+    res.end(JSON.stringify({ message: 'All books deleted' }));
+  }
 
-    
-    else {
-        res.writeHead(404);
-        res.end(JSON.stringify({ error: "Route not found" }));
-    }
-
-})
-
+  else {
+    res.statusCode = 405;
+    res.end(JSON.stringify({ message: 'Method not allowed' }));
+  }
+});
 server.listen(3000, () => {
-    console.log("Library server running at http://localhost:3000");
+  console.log('Library server running at http://localhost:3000');
 });
